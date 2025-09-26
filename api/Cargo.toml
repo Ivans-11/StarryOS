@@ -7,9 +7,11 @@ homepage.workspace = true
 repository.workspace = true
 
 [features]
+default = ["kprobe_test"]
 input = ["dep:axinput"]
 memtrack = ["axfeat/backtrace", "axalloc/tracking", "dep:gimli"]
 dev-log = []
+kprobe_test = []
 
 [dependencies]
 axfeat.workspace = true
@@ -28,7 +30,13 @@ axmm.workspace = true
 axnet.workspace = true
 axsync.workspace = true
 axtask.workspace = true
-axksym.workspace = true
+ksym.workspace = true
+kprobe.workspace = true
+lock_api.workspace = true
+axcpu.workspace = true
+kernel_guard.workspace = true
+unwinding.workspace = true
+
 starry-core.workspace = true
 lazyinit.workspace = true
 
