@@ -43,7 +43,9 @@ axsync = { path = "arceos/modules/axsync" }
 axtask = { path = "arceos/modules/axtask", features = ["task-ext"] }
 ksym = { git = "https://github.com/Starry-OS/ksym", rev = "1e37536" }
 kprobe = { git = "https://github.com/Starry-OS/kprobe", rev = "318cbb2" }
-axcpu = { git = "https://github.com/Starry-OS/axcpu", rev = "94aa1bd", features = ["kprobe"]}
+axcpu = { git = "https://github.com/Starry-OS/axcpu", rev = "94aa1bd", features = [
+    "kprobe",
+] }
 lazyinit = "0.2"
 
 axbacktrace = "0.1"
@@ -74,7 +76,6 @@ memory_addr = "0.4"
 scope-local = "0.1"
 slab = { version = "0.4.9", default-features = false }
 spin = "0.9"
-
 starry-core = { path = "./core" }
 starry-api = { path = "./api" }
 lock_api = { version = "0.4", default-features = false }
