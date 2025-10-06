@@ -43,9 +43,7 @@ axsync = { path = "arceos/modules/axsync" }
 axtask = { path = "arceos/modules/axtask", features = ["task-ext"] }
 ksym = { git = "https://github.com/Starry-OS/ksym", rev = "1e37536" }
 kprobe = { git = "https://github.com/Starry-OS/kprobe", rev = "318cbb2" }
-# axcpu = { path = "arceos/modules/axcpu" }
-# axcpu = { git = "https://github.com/Starry-OS/axcpu", branch = "dev" }
-axcpu = { path = "../ax-projetct/axcpu", features = ["kprobe"] }
+axcpu = { git = "https://github.com/Starry-OS/axcpu", rev = "94aa1bd", features = ["kprobe"]}
 lazyinit = "0.2"
 
 axbacktrace = "0.1"
@@ -81,12 +79,6 @@ starry-core = { path = "./core" }
 starry-api = { path = "./api" }
 lock_api = { version = "0.4", default-features = false }
 kernel_guard = "0.1"
-unwinding = { version = "=0.2.6", default-features = false, features = [
-	"unwinder",
-	"fde-gnu-eh-frame-hdr",
-	"panic",
-	"personality",
-] }
 
 [package]
 name = "starry"
@@ -158,7 +150,7 @@ optional = true
 
 [patch.crates-io]
 axbacktrace = { git = "https://github.com/Starry-OS/axbacktrace.git", rev = "09c22b6" }
-axcpu = { git = "https://github.com/Starry-OS/axcpu.git", rev = "53455db" }
+axcpu = { git = "https://github.com/Starry-OS/axcpu.git", rev = "94aa1bd" }
 axerrno = { git = "https://github.com/Starry-OS/axerrno.git", rev = "58be232" }
 axio = { git = "https://github.com/Starry-OS/axio.git", rev = "f7a2dfe" }
 axplat = { git = "https://github.com/Starry-OS/axplat_crates.git", rev = "243fdc9" }
