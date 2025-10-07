@@ -112,7 +112,7 @@ pub fn sys_waitpid(
         }
     };
 
-    let result = block_on(interruptible(poll_fn(|cx| {
+    block_on(interruptible(poll_fn(|cx| {
         match check_children().transpose() {
             Some(res) => Poll::Ready(res),
             None => {
@@ -120,15 +120,5 @@ pub fn sys_waitpid(
                 Poll::Pending
             }
         }
-    })));
-    match result {
-        Ok(r) => r,
-        Err(_) => {
-            // FIXME: more general syscall RESTART
-            let ip = uctx.ip() - 4;
-            uctx.set_ip(ip);
-            while check_signals(curr.as_thread(), uctx, None) {}
-            Ok(0)
-        }
-    }
+    })))?
 }
