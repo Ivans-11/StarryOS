@@ -411,7 +411,7 @@ dependencies = [
  "cfg-if",
  "crate_interface",
  "log",
- "printf-compat",
+ "printf-compat 0.1.1",
 ]
 
 [[package]]
@@ -523,7 +523,7 @@ dependencies = [
  "intrusive-collections",
  "kspin",
  "log",
- "lru",
+ "lru 0.16.0",
  "lwext4_rust",
  "scope-local",
  "slab",
@@ -1101,6 +1101,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b05b61dc5112cbb17e4b6cd61790d9845d13888356391624cbe7e41efeac1e75"
 
 [[package]]
+name = "combine"
+version = "4.6.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ba5a308b75df32fe02788e748662718f03fde005016435c444eea572398219fd"
+dependencies = [
+ "memchr",
+]
+
+[[package]]
 name = "concurrent-queue"
 version = "2.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1321,7 +1330,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.60.2",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -1607,6 +1616,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "int-enum"
+version = "1.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e366a1634cccc76b4cfd3e7580de9b605e4d93f1edac48d786c1f867c0def495"
+dependencies = [
+ "proc-macro2",
+ "proc-macro2-diagnostics",
+ "quote",
+ "syn 2.0.106",
+]
+
+[[package]]
 name = "int_ratio"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1654,6 +1675,28 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "413ee7dfc52ee1a4949ceeb7dbc8a33f2d6c088194d9f922fb8318faf1f01186"
 dependencies = [
  "either",
+]
+
+[[package]]
+name = "itertools"
+version = "0.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2b192c782037fadd9cfa75548310488aabdbf3d2da73885b31bd0abd03351285"
+dependencies = [
+ "either",
+]
+
+[[package]]
+name = "kbpf-basic"
+version = "0.1.0"
+source = "git+https://github.com/Starry-OS/kbpf-basic#ef8ade57d96e79e985cc84be38c00c914e52750a"
+dependencies = [
+ "bitflags 2.9.4",
+ "int-enum",
+ "log",
+ "lru 0.14.0",
+ "printf-compat 0.2.1",
+ "rbpf 0.3.0 (git+https://github.com/qmonnet/rbpf)",
 ]
 
 [[package]]
@@ -1793,6 +1836,15 @@ checksum = "7c9f0d275c70310e2a9d2fc23250c5ac826a73fa828a5f256401f85c5c554283"
 dependencies = [
  "bit_field",
  "bitflags 2.9.4",
+]
+
+[[package]]
+name = "lru"
+version = "0.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9f8cc7106155f10bdf99a6f379688f543ad6596a415375b36a59a054ceda1198"
+dependencies = [
+ "hashbrown",
 ]
 
 [[package]]
@@ -2136,6 +2188,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "printf-compat"
+version = "0.2.1"
+source = "git+https://github.com/lights0123/printf-compat?rev=ad00c19#ad00c1976bd0538c70e431ec620152f9cc3b6efe"
+dependencies = [
+ "bitflags 2.9.4",
+ "itertools 0.14.0",
+]
+
+[[package]]
 name = "proc-macro-error-attr2"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2219,6 +2280,28 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "498cd0dc59d73224351ee52a95fee0f1a617a2eae0e7d9d720cc622c73a54186"
 dependencies = [
  "bitflags 2.9.4",
+]
+
+[[package]]
+name = "rbpf"
+version = "0.3.0"
+source = "git+https://github.com/qmonnet/rbpf.git?rev=f31e471#f31e471a29dea9a0c272626f7b762adba755e6cc"
+dependencies = [
+ "byteorder",
+ "combine",
+ "hashbrown",
+ "log",
+]
+
+[[package]]
+name = "rbpf"
+version = "0.3.0"
+source = "git+https://github.com/qmonnet/rbpf#f31e471a29dea9a0c272626f7b762adba755e6cc"
+dependencies = [
+ "byteorder",
+ "combine",
+ "hashbrown",
+ "log",
 ]
 
 [[package]]
@@ -2336,7 +2419,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys 0.11.0",
- "windows-sys 0.60.2",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -2543,6 +2626,7 @@ dependencies = [
  "hashbrown",
  "indoc",
  "inherit-methods-macro",
+ "kbpf-basic",
  "kernel_guard",
  "kprobe",
  "kspin",
@@ -2555,6 +2639,7 @@ dependencies = [
  "memory_addr",
  "num_enum",
  "rand",
+ "rbpf 0.3.0 (git+https://github.com/qmonnet/rbpf.git?rev=f31e471)",
  "ringbuf",
  "riscv",
  "scope-local",
