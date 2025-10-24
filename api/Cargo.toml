@@ -15,7 +15,7 @@ kprobe_test = []
 
 [dependencies]
 axfeat.workspace = true
-
+axruntime.workspace = true
 axalloc.workspace = true
 axconfig.workspace = true
 axdisplay.workspace = true
