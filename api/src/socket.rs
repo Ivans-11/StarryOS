@@ -10,8 +10,8 @@ use core::{
 use axerrno::{AxError, AxResult, LinuxError};
 #[cfg(feature = "vsock")]
 use axnet::vsock::VsockAddr;
-use axnet::{SocketAddrEx, unix::UnixSocketAddr};
-use linux_raw_sys::net::*;
+use axnet::{SocketAddrEx, unix::UnixSocketAddr, netlink::NetlinkAddr};
+use linux_raw_sys::{net::*, netlink::sockaddr_nl};
 
 use crate::mm::{UserConstPtr, UserPtr};
 
@@ -241,6 +241,37 @@ impl SocketAddrExt for VsockAddr {
     }
 }
 
+impl SocketAddrExt for NetlinkAddr {
+    fn read_from_user(addr: UserConstPtr<sockaddr>, addrlen: socklen_t) -> AxResult<Self> {
+        if addrlen != size_of::<sockaddr_nl>() as socklen_t {
+            return Err(AxError::InvalidInput);
+        }
+        let addr_nl = addr.cast::<sockaddr_nl>().get_as_ref()?;
+        if addr_nl.nl_family as u32 != AF_NETLINK {
+            return Err(AxError::Other(LinuxError::EAFNOSUPPORT));
+        }
+
+        Ok(NetlinkAddr {
+            nl_pid: addr_nl.nl_pid,
+            nl_groups: addr_nl.nl_groups,
+        })
+    }
+
+    fn write_to_user(&self, addr: UserPtr<sockaddr>, addrlen: &mut socklen_t) -> AxResult<()> {
+        let socknl_addr = sockaddr_nl {
+            nl_family: AF_NETLINK as _,
+            nl_pad: 0,
+            nl_pid: self.nl_pid,
+            nl_groups: self.nl_groups,
+        };
+        fill_addr(addr, addrlen, unsafe { cast_to_slice(&socknl_addr) })
+    }
+
+    fn family(&self) -> u16 {
+        AF_NETLINK as u16
+    }
+}
+
 impl SocketAddrExt for SocketAddrEx {
     fn read_from_user(addr: UserConstPtr<sockaddr>, addrlen: socklen_t) -> AxResult<Self> {
         match read_family(addr, addrlen)? as u32 {
@@ -258,6 +289,7 @@ impl SocketAddrExt for SocketAddrEx {
             SocketAddrEx::Unix(unix_addr) => unix_addr.write_to_user(addr, addrlen),
             #[cfg(feature = "vsock")]
             SocketAddrEx::Vsock(vsock_addr) => vsock_addr.write_to_user(addr, addrlen),
+            SocketAddrEx::Netlink(netlink_addr) => netlink_addr.write_to_user(addr, addrlen),
         }
     }
 

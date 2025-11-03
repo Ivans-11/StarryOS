@@ -13,8 +13,8 @@ const PROTO_IP: u32 = linux_raw_sys::net::IPPROTO_IP as u32;
 
 mod conv {
     use axerrno::{AxError, AxResult};
-    use axnet::options::UnixCredentials;
-    use linux_raw_sys::{general::timeval, net::ucred};
+    use axnet::options::{UnixCredentials, IpAddr};
+    use linux_raw_sys::{general::timeval, net::{ucred, in_addr, ip_mreq}};
 
     use crate::time::TimeValueLike;
 
@@ -73,6 +73,41 @@ mod conv {
             })
         }
     }
+
+    pub struct InAddr;
+
+    impl InAddr {
+        pub fn sys_to_rust(val: in_addr) -> AxResult<IpAddr> {
+            Ok(IpAddr::V4(core::net::Ipv4Addr::from(u32::from_be(val.s_addr))))
+        }
+
+        pub fn rust_to_sys(val: IpAddr) -> AxResult<in_addr> {
+            match val {
+                IpAddr::V4(v4) => Ok(in_addr {
+                    s_addr: u32::to_be(u32::from(v4)),
+                }),
+                IpAddr::V6(_) => Err(AxError::InvalidInput),
+            }
+        }
+    }
+
+    pub struct IpMreq;
+
+    impl IpMreq {
+        pub fn sys_to_rust(val: ip_mreq) -> AxResult<(IpAddr, IpAddr)> {
+            Ok((
+                InAddr::sys_to_rust(val.imr_multiaddr)?,
+                InAddr::sys_to_rust(val.imr_interface)?,
+            ))
+        }
+
+        pub fn rust_to_sys(val: (IpAddr, IpAddr)) -> AxResult<ip_mreq> {
+            Ok(ip_mreq {
+                imr_multiaddr: InAddr::rust_to_sys(val.0)?,
+                imr_interface: InAddr::rust_to_sys(val.1)?,
+            })
+        }
+    }
 }
 
 macro_rules! call_dispatch {
@@ -98,6 +133,10 @@ macro_rules! call_dispatch {
             (PROTO_TCP, TCP_INFO) => TcpInfo,
 
             (PROTO_IP, IP_TTL) => Ttl as Int<u8>,
+            (PROTO_IP, IP_MULTICAST_TTL) => MulticastTtl,
+            (PROTO_IP, IP_MULTICAST_LOOP) => MulticastLoop as IntBool,
+            (PROTO_IP, IP_MULTICAST_IF) => MulticastIf as InAddr,
+            (PROTO_IP, IP_ADD_MEMBERSHIP) => AddMembership as IpMreq,
         }
     }};
     ($dispatch:ident, $in:expr, $($pat:pat => $which:ident $(as $conv:ty)?),* $(,)?) => {

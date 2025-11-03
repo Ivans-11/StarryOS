@@ -45,7 +45,7 @@ inherit-methods-macro = "0.1.0"
 kspin.workspace = true
 lazy_static = { workspace = true }
 linkme.workspace = true
-linux-raw-sys = { workspace = true, features = ["ioctl", "loop_device"] }
+linux-raw-sys = { workspace = true, features = ["ioctl", "loop_device", "netlink"] }
 memory_addr.workspace = true
 num_enum = { version = "0.7", default-features = false }
 rand = { version = "0.9.1", default-features = false, features = [

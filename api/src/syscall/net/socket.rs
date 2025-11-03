@@ -6,13 +6,14 @@ use axnet::{
     tcp::TcpSocket,
     udp::UdpSocket,
     unix::{DgramTransport, StreamTransport, UnixSocket},
+    netlink::NetlinkSocket,
 };
 use axtask::current;
 use linux_raw_sys::{
     general::{O_CLOEXEC, O_NONBLOCK},
     net::{
-        AF_INET, AF_UNIX, AF_VSOCK, IPPROTO_TCP, IPPROTO_UDP, SHUT_RD, SHUT_RDWR, SHUT_WR,
-        SOCK_DGRAM, SOCK_SEQPACKET, SOCK_STREAM, sockaddr, socklen_t,
+        AF_INET, AF_UNIX, AF_VSOCK, AF_NETLINK, IPPROTO_TCP, IPPROTO_UDP, SHUT_RD, SHUT_RDWR, SHUT_WR,
+        SOCK_DGRAM, SOCK_SEQPACKET, SOCK_STREAM, SOCK_RAW, sockaddr, socklen_t,
     },
 };
 use starry_core::task::AsThread;
@@ -54,6 +55,7 @@ pub fn sys_socket(domain: u32, raw_ty: u32, proto: u32) -> AxResult<isize> {
             warn!("Unsupported socket type: domain: {}, ty: {}", domain, ty);
             return Err(AxError::Other(LinuxError::ESOCKTNOSUPPORT));
         }
+        (AF_NETLINK, SOCK_DGRAM) | (AF_NETLINK, SOCK_RAW) => axnet::Socket::Netlink(NetlinkSocket::new(proto)),
         _ => {
             return Err(AxError::Other(LinuxError::EAFNOSUPPORT));
         }
